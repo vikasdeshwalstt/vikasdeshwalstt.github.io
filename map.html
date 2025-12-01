@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Delivery Tracker Dashboard</title>
+<style>
+  body{font-family:Arial,sans-serif;margin:0;background:#f4f6f8;color:#333;}
+  header{background:#0078d7;color:white;text-align:center;padding:15px;font-size:1.4rem;font-weight:bold;}
+  .container{max-width:900px;margin:30px auto;background:white;padding:20px;border-radius:10px;box-shadow:0 4px 10px rgba(0,0,0,0.1);}
+  input{width:100%;padding:10px;margin-bottom:15px;border:1px solid #ccc;border-radius:6px;}
+  table{width:100%;border-collapse:collapse;}
+  th,td{padding:12px;text-align:left;border-bottom:1px solid #ddd;}
+  th{background:#0078d7;color:white;}
+  tr:hover{background:#f1f1f1;}
+  button{background:#28a745;color:white;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;}
+  button:hover{background:#218838;}
+  @media(max-width:600px){th,td{display:block;width:100%;}tr{margin-bottom:10px;border-bottom:2px solid #ddd;}th{display:none;}}
+</style>
+</head>
+<body>
+<header>Vikas Deshwal Trading Company - Delivery Dashboard</header>
+<div class="container">
+  <input type="text" id="search" placeholder="Search by city, area, or client name...">
+  <table>
+    <thead>
+      <tr>
+        <th>Client Name</th>
+        <th>City</th>
+        <th>Area / Address</th>
+        <th id="contactHeader">Contact</th>
+        <th>Map</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+</div>
+
+<script>
+const LOCATIONS = [
+  {
+  name:"Neha Traders",
+  city:"Delhi",
+  area:"Connaught Place",
+  contact:"9876543210",
+  mapLink:"https://www.google.com/maps/place/28%C2%B051'56.3%22N+77%C2%B007'10.6%22E/@28.8668729,77.1150497,16.89z/data=!4m4!3m3!8m2!3d28.865643!4d77.1195995?entry=ttu&g_ep=EgoyMDI1MTAwOC4wIKXMDSoASAFQAw%3D%3D"
+  },
+  {
+  name:"Client B",
+  city:"Mumbai",
+  area:"Bandra",
+  contact:"9876543211",
+  mapLink:"https://www.google.com/maps/place/Bandra,+Mumbai"
+  },
+   {
+  name:"Client B",
+  city:"Mumbai",
+  area:"Bandra",
+  contact:"9876543211",
+  mapLink:"https://www.google.com/maps/place/Bandra,+Mumbai"
+  },
+   {
+  name:"Client B",
+  city:"Mumbai",
+  area:"Bandra",
+  contact:"9876543211",
+  mapLink:"https://www.google.com/maps/place/Bandra,+Mumbai"
+  },
+];
+
+// Check role
+const role = sessionStorage.getItem('userRole');
+if(!role){ window.location.href = 'location.html'; } // not logged in
+
+// Hide contact if not admin
+if(role!=='admin'){ document.getElementById('contactHeader').style.display='none'; }
+
+const searchInput = document.getElementById("search");
+const tableBody = document.getElementById("tableBody");
+
+function displayLocations(data){
+  tableBody.innerHTML = "";
+  data.forEach(loc=>{
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${loc.name}</td>
+      <td>${loc.city}</td>
+      <td>${loc.area}</td>
+      <td style="display:${role==='admin'?'table-cell':'none'}">${loc.contact}</td>
+      <td><button onclick="window.open('${loc.mapLink}','_blank')">Show on Map</button></td>
+    `;
+    tableBody.appendChild(row);
+  });
+}
+
+displayLocations(LOCATIONS);
+
+searchInput.addEventListener("input",(e)=>{
+  const term = e.target.value.toLowerCase();
+  const filtered = LOCATIONS.filter(loc =>
+    loc.name.toLowerCase().includes(term)||
+    loc.city.toLowerCase().includes(term)||
+    loc.area.toLowerCase().includes(term)
+  );
+  displayLocations(filtered);
+});
+</script>
+</body>
+</html>
